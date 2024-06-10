@@ -2,8 +2,6 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 
-const authorRoute = require('./routes/bookRoute/authorRoute')
-const genreRoute = require('./routes/bookRoute/genreRoute')
 const bookRoute = require('./routes/bookRoute/bookRoute');
 
 const typeEmployeeRoute = require('./routes/employeeRoute/typeEmployeeRoute');
@@ -23,8 +21,6 @@ app.get('/', (req, res) =>{
 })
 
 //Rota dos dados do livro
-app.use('/author', authorRoute);
-app.use('/genre', genreRoute);
 app.use('/book', bookRoute); 
 
 //Rota dos dados do funcionário

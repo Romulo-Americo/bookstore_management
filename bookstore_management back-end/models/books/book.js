@@ -1,9 +1,6 @@
 const { DataTypes } = require('sequelize');
 const data = require('../../db/connection');
 
-//Requisição das chaves esrangeiras
-const Author = require('./author');
-const Genre = require('./genre');
 
 const Book = data.define(
     'Book',{
@@ -16,6 +13,18 @@ const Book = data.define(
         title:{
             type: DataTypes.STRING,
             allowNull: false
+        },
+        author:{
+            type:DataTypes.STRING,
+            allowNull: false
+        },
+        genre:{
+            type:DataTypes.STRING,
+            allowNull:false
+        },
+        year:{
+            type: DataTypes.STRING,
+            allowNull:false
         },
         price:{
             type: DataTypes.DOUBLE,
@@ -33,10 +42,5 @@ const Book = data.define(
         }
 });
 
-Book.belongsToMany(Author, {through:'BookAuthors', foreignKey: 'bookId'});
-Author.belongsToMany(Book, {through:'BookAuthors', foreignKey: 'authorId'})
-
-Book.belongsTo(Genre, { foreignKey: 'genreId', as: 'genre' });
-Genre.hasMany(Book, { foreignKey: 'genreId' });
   
 module.exports = Book;

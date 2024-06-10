@@ -1,4 +1,5 @@
 const Employee = require('../../../models/employee/employee');
+const EmployeeAttemps = require('../../../models/employee/employeeAttemps');
 
 module.exports = (req, res) =>{
     const { id } = req.params;
@@ -6,13 +7,19 @@ module.exports = (req, res) =>{
     Employee.findOne({ where: { employee_id: id } })
     .then((employee) =>{
         if(employee.situation){
-            res.send('This user is not blocked')
-        }else if(!employee.situation){
+           return res.send('This user is not blocked');
+        }else{
             employee.update({ 
                 situation: true,
                 password: 'bookstore@123'
             });
-            res.send('User unblocked');
+            EmployeeAttemps.findOne( { where: { employee_id: id }} )
+            .then((resetAttemps) =>{
+                resetAttemps.update({
+                    attemps: 0
+                })
+            })
+            return res.send('User unblocked');
         }
     })
     .catch((err) =>{

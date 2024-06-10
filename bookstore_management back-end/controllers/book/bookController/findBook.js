@@ -1,4 +1,3 @@
-const Author = require('../../../models/books/author');
 const Book = require('../../../models/books/book');
 
 module.exports = (req, res) =>{

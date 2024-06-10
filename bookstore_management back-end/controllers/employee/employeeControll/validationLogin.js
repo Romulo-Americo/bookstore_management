@@ -1,36 +1,54 @@
 const Employee = require('../../../models/employee/employee');
-
-let count = 0;
+const EmployeeAttemps = require('../../../models/employee/employeeAttemps');
+const { Sequelize } = require('sequelize');
 
 module.exports = (req, res) => {
     const { registration, password } = req.body;
 
     Employee.findOne({ where: { registration: registration } })
-        .then((employee) => {
+        .then(employee => {
             if (!employee) {
                 res.send('Employee not found');
+            }
 
-            } else if (employee.password !== password) {
-                console.log('Senha incorreta');
-                count ++
-                if(!employee.situation){
-                    res.send('You are blocked');
-                }else{
-                    res.send('Wrong password');
-                }
-                if(count == 3){
-                    employee.update({ situation: false });
-                    console.log('block');
-                }
-
-            } else if(!employee.situation && employee.password == password ){
-                res.send('You are blocked');
-
-            }else{
-                res.send('Welcome');
+            if (employee.password !== password) {
+                EmployeeAttemps.findOne({ where: { employee_id: employee.employee_id } })
+                    .then(attempt => {
+                        if (!attempt) {
+                            return EmployeeAttemps.create({ employeeId: employee.employee_id, attemps: 1 })
+                                .then(() => {
+                                    res.send('Incorrect password, attempt recorded');
+                                });
+                        } else {
+                            EmployeeAttemps.update(
+                                { attemps: Sequelize.literal('attemps + 1') },
+                                { where: { employee_id: employee.employee_id } }
+                            )
+                            .then(() => {
+                                return EmployeeAttemps.findOne({ where: { employee_id: employee.employee_id } });
+                            })
+                            .then(updatedAttempt => {
+                                if (updatedAttempt.attemps >= 3) {
+                                    res.send('Blocked');
+                                    Employee.update(
+                                        { situation: false },
+                                        { where: { employee_id: updatedAttempt.employee_id } }
+                                    )
+                                } else {
+                                    res.send('Incorrect password, attempt updated');
+                                }
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        res.send(`Error finding employee attempts: ${err}`);
+                    });
+            } else {
+                res.send(`Welcome, your ID is ${employee.employee_id}`);
             }
         })
         .catch(err => {
-            console.log(`Error to find employee ${err}`);
+            console.error(`Error to find employee: ${err}`);
+            res.send('Error occurred');
         });
-}
+};

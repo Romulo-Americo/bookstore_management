@@ -1,8 +1,6 @@
 const { DataTypes } = require('sequelize');
 const data = require('../../db/connection');
 
-//Requisição para verificar qual livro foi comprado ou alugado
-const Book = require('../books/book');
 
 const Client = data.define(
     'Client',{
@@ -18,7 +16,7 @@ const Client = data.define(
         },
         registration:{
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
         },
         email:{
             type: DataTypes.STRING,
@@ -34,29 +32,23 @@ const Client = data.define(
         },
         points:{
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: false,
+            defaultValue: 0
         },
         situation:{
             type: DataTypes.BOOLEAN,
-            allowNull: false
+            allowNull: false,
+            defaultValue: true
         },
         qtBooks:{
             type: DataTypes.INTEGER,
-            allowNull: false
-        },
-        rentalDate:{
-            type:DataTypes.DATE,
-            allowNull: true,            
-        },
-        returnDate:{
-            type:DataTypes.DATE,
-            allowNull: true
+            allowNull: false,
+            defaultValue: 0
         }
 
     }
 )
 
-Client.belongsToMany(Book, { through:'BookClient', foreignKey: 'bookId' });
-Book.belongsToMany(Client, { through:'BookClient', foreignKey: 'clientId' });
+
 
 module.exports = Client;

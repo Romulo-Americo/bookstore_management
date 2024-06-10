@@ -3,7 +3,7 @@ const createRegistration = require('../../../utils/createRegistration')
 
 module.exports = (req, res) =>{
     const { name, email, typeEmployeeId } = req.body
-    const registration = createRegistration;
+    const registration = createRegistration();
     const password = 'bookstore@123';
 
     Employee.create({

@@ -21,7 +21,7 @@ module.exports = (req, res) =>{
             let returnDate =  new Date(rentalDate);
             returnDate.setDate(returnDate.getDate() + 1);
             if(client.qtBooks == 2){
-                res.send('Limite de livros alugados execidos')
+                res.send('Limite de livros alugados execidos') 
             }else{
                 if(bookIds && bookIds.length > 0){
                     client.setBooks(bookIds)
