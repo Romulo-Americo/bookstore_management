@@ -1,5 +1,4 @@
 const Book = require('../../../models/books/book');
-
 module.exports = (req, res) => {
     const { title, author,  genre, year, price } = req.body;
 
